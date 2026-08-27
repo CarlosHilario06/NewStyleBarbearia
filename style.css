@@ -551,8 +551,12 @@ footer { padding: 56px 0 36px; border-top: 1px solid var(--line); }
 .whats-float:hover { transform: scale(1.08); box-shadow: 0 14px 32px -6px rgba(0,0,0,0.6); }
 .whats-float:active { transform: scale(1.02); }
 
-/* ---------- Scroll reveal base ---------- */
-[data-reveal] { opacity: 0; }
+/* ---------- Scroll reveal base ----------
+   [data-reveal] elements start hidden ONLY once GSAP confirms it loaded and
+   arms the ".gsap-ready" class on <html> (see script.js). If GSAP fails to
+   load (blocked CDN, offline, slow network), this class never gets added,
+   so content stays at its natural opacity: 1 and is never stuck invisible. */
+.gsap-ready [data-reveal] { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

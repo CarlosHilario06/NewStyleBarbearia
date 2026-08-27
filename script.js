@@ -26,8 +26,12 @@ function onHeaderScroll() {
 window.addEventListener('scroll', onHeaderScroll, { passive: true });
 onHeaderScroll();
 
-/* ---------- GSAP scroll reveals ---------- */
+/* ---------- GSAP scroll reveals ----------
+   The ".gsap-ready" class is what switches [data-reveal] elements to
+   start at opacity: 0 (see style.css) — only added here, so a failed or
+   slow GSAP load never leaves content stuck invisible. */
 if (window.gsap) {
+  document.documentElement.classList.add('gsap-ready');
   gsap.registerPlugin(ScrollTrigger);
 
   const heroReveals = gsap.utils.toArray('.hero [data-reveal]');
