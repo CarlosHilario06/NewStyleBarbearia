@@ -60,7 +60,13 @@ Se preferir usar outro nome de arquivo, lembre de atualizar também o caminho co
 
 ## Sobre a animação 3D do topo
 
-O hero usa uma cena Three.js própria (`three-scene.js`): uma reconstrução estilizada do próprio ambiente da barbearia (estilo maquete/isométrico, canto de fundo com parede + piso + móveis), nas proporções reais do espaço — 4,80m x 3,60m, pé-direito 2,60m. Cadeira de barbeiro, sofá, espelho, TV, ventilador, tripé de luz de anel e banqueta são todos modelados com geometria simples (caixas, cilindros) direto no código — não depende de nenhum arquivo de modelo 3D externo. Ao carregar, os móveis "aparecem" na cena com uma animação de entrada escalonada; depois disso a câmera balança suavemente e reage ao mouse e à rolagem da página. Para ajustar posições, cores ou as dimensões do cômodo, edite as constantes no início de `three-scene.js` (`ROOM_W`, `ROOM_D`, `ROOM_H`). A cena respeita a preferência do sistema por "movimento reduzido" (`prefers-reduced-motion`), reduzindo o balanço da câmera para quem tem essa opção ativada.
+O hero usa uma cena Three.js própria (`three-scene.js`): uma reconstrução estilizada do próprio ambiente da barbearia, baseada na foto 360° real da loja — um cômodo em U com 3 paredes (parede do espelho, parede de fundo com TV/quadros/espelho redondo, parede da porta) aberto na frente, nas proporções reais do espaço — 4,80m x 3,60m, pé-direito 2,60m. Cadeira de barbeiro, sofá, espelho, TV, porta, ventilador, tripé de luz de anel e banqueta são todos modelados com geometria simples (caixas, cilindros) direto no código — não depende de nenhum arquivo de modelo 3D externo nem de scan/foto real.
+
+Ao carregar, os móveis "aparecem" na cena com uma animação de entrada escalonada. Em desktop, dá pra **clicar e arrastar** o mouse sobre a cena pra olhar ao redor (a câmera gira dentro de um limite, pra nunca atravessar as paredes); em qualquer dispositivo ela também balança sozinha bem devagar quando ninguém está arrastando, e reage à rolagem da página. Em toque (celular/tablet) o arrastar fica desativado de propósito, pra não atrapalhar o scroll normal da página.
+
+Para ajustar posições, cores ou as dimensões do cômodo, edite as constantes no início de `three-scene.js` (`ROOM_W`, `ROOM_D`, `ROOM_H`). A cena respeita a preferência do sistema por "movimento reduzido" (`prefers-reduced-motion`), desligando o balanço automático da câmera para quem tem essa opção ativada.
+
+**Importante:** isso é uma maquete estilizada, não um tour 3D fotorrealista (tipo Matterport/scan 3D). Pra esse nível de realismo seria necessário escanear o ambiente de verdade (com um app tipo Polycam ou Luma AI, ou contratando um serviço de tour virtual) e carregar o modelo escaneado no lugar dessa geometria simples.
 
 ## Domínio próprio (opcional)
 

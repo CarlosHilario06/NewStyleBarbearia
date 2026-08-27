@@ -161,7 +161,7 @@ header.is-scrolled {
   inset: 0;
   z-index: 1;
 }
-.hero-scene canvas { display: block; width: 100%; height: 100%; }
+.hero-scene canvas { display: block; width: 100%; height: 100%; -webkit-user-select: none; user-select: none; touch-action: pan-y; }
 .hero-scrim {
   position: absolute;
   inset: 0;
@@ -177,8 +177,10 @@ header.is-scrolled {
   margin: 0 auto;
   padding: 0 28px;
   width: 100%;
+  pointer-events: none;
 }
-.hero-content { max-width: 560px; }
+.hero-content { max-width: 560px; pointer-events: none; }
+.hero-content a, .hero-content .btn { pointer-events: auto; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -246,6 +248,7 @@ header.is-scrolled {
   padding: 18px 24px;
   box-shadow: var(--shadow-soft);
   max-width: 300px;
+  pointer-events: none;
 }
 .hero-badge .num {
   font-family: 'Fraunces', serif;
@@ -268,6 +271,7 @@ header.is-scrolled {
   gap: 10px;
   color: var(--text-faint);
   font-size: 11px;
+  pointer-events: none;
 }
 .scroll-cue .line { width: 1px; height: 34px; background: linear-gradient(var(--brass), transparent); position: relative; overflow: hidden; }
 .scroll-cue .line::after {
