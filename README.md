@@ -1,23 +1,23 @@
 # New Style Barbearia — Site
 
-Site institucional de uma página (one page) da New Style Barbearia, feito em HTML, CSS e JavaScript puros — sem framework, sem build, sem dependências para instalar.
+Site institucional de uma página (one page) da New Style Barbearia, feito em HTML, CSS e JavaScript puros — sem framework, sem build, sem dependências para instalar. O topo (hero) tem uma animação 3D autoral (um poste de barbeiro estilizado, feito em Three.js) e o restante da página usa GSAP + ScrollTrigger para as animações de entrada ao rolar.
 
 ## Estrutura de pastas
 
 ```
 .
-├── index.html          → estrutura e conteúdo do site
-├── css/
-│   └── style.css        → todo o estilo visual
-├── js/
-│   └── script.js        → menu mobile (abrir/fechar)
-├── assets/
-│   ├── favicon.png       → ícone da aba do navegador
-│   ├── logo-branca.png   → logo usada no menu e no rodapé
-│   ├── carlinho.png      → foto do barbeiro (seção "O barbeiro")
-│   └── ambiente.jpg      → foto de fundo do topo (hero)
+├── index.html        → estrutura e conteúdo do site
+├── style.css          → todo o estilo visual
+├── script.js           → menu mobile, header, animações de entrada (GSAP)
+├── three-scene.js      → cena 3D do hero (Three.js), gerada por código, sem modelo externo
+├── favicon.png         → ícone da aba do navegador
+├── logo-branca.png     → logo usada no menu e no rodapé
+├── carlinho.png        → foto do barbeiro (seção "O barbeiro")
+├── ambiente.jpg        → foto do ambiente (seção "Sobre")
 └── README.md
 ```
+
+Three.js e GSAP são carregados via CDN (não precisam de instalação). O site funciona sem 3D em navegadores/dispositivos sem WebGL — o hero cai automaticamente para o fundo em gradiente, sem quebrar o layout.
 
 ## Como visualizar localmente
 
@@ -49,14 +49,18 @@ Tudo fica no arquivo `index.html`. Os principais pontos ficam logo no topo, dent
 
 ## Como trocar as fotos
 
-Basta substituir os arquivos dentro de `assets/` **mantendo o mesmo nome**:
+Basta substituir os arquivos na raiz do projeto **mantendo o mesmo nome**:
 
-- `ambiente.jpg` — foto de fundo do topo do site.
+- `ambiente.jpg` — foto do ambiente, usada na seção "Sobre".
 - `carlinho.png` — foto do barbeiro na seção "O barbeiro" (se for trocar, uma foto com fundo já removido/transparente fica melhor, pois o layout foi pensado pra isso).
-- `logo-branca.png` — logo em branco/transparente (usada sobre fundo escuro).
+- `logo-branca.png` — logo em branco/transparente (usada no menu e no rodapé).
 - `favicon.png` — ícone pequeno que aparece na aba do navegador.
 
-Se preferir usar outro nome de arquivo, lembre de atualizar também o caminho correspondente dentro do `index.html` (procure por `src="assets/...`) e, no caso do `ambiente.jpg`, dentro do `css/style.css` (procure por `url('../assets/ambiente.jpg')`).
+Se preferir usar outro nome de arquivo, lembre de atualizar também o caminho correspondente dentro do `index.html` (procure por `src="...`).
+
+## Sobre a animação 3D do topo
+
+O hero usa uma cena Three.js própria (`three-scene.js`): uma reconstrução estilizada do próprio ambiente da barbearia (estilo maquete/isométrico, canto de fundo com parede + piso + móveis), nas proporções reais do espaço — 4,80m x 3,60m, pé-direito 2,60m. Cadeira de barbeiro, sofá, espelho, TV, ventilador, tripé de luz de anel e banqueta são todos modelados com geometria simples (caixas, cilindros) direto no código — não depende de nenhum arquivo de modelo 3D externo. Ao carregar, os móveis "aparecem" na cena com uma animação de entrada escalonada; depois disso a câmera balança suavemente e reage ao mouse e à rolagem da página. Para ajustar posições, cores ou as dimensões do cômodo, edite as constantes no início de `three-scene.js` (`ROOM_W`, `ROOM_D`, `ROOM_H`). A cena respeita a preferência do sistema por "movimento reduzido" (`prefers-reduced-motion`), reduzindo o balanço da câmera para quem tem essa opção ativada.
 
 ## Domínio próprio (opcional)
 
