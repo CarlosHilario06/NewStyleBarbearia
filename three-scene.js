@@ -1,13 +1,15 @@
 import * as THREE from 'https://unpkg.com/three@0.160.1/build/three.module.js';
 
 /**
- * Procedural 3D centerpiece for the hero: a stylised low-poly reconstruction
- * of the real New Style Barbearia room — a 3-wall U-shaped shell (mirror
- * wall, back feature wall, door wall) open at the front, matching the
- * shop's 360° reference photo and its real proportions (4.80m x 3.60m,
- * pé-direito 2.60m). No external model — every mesh, texture and material
- * below is generated in code. Desktop pointer users can click-drag to look
- * around inside the clamped arc (touch keeps normal page scrolling).
+ * Procedural 3D backdrop for the whole page: a stylised low-poly
+ * reconstruction of the real New Style Barbearia room — a 3-wall U-shaped
+ * shell (mirror wall, back feature wall, door wall) open at the front,
+ * matching the shop's 360° reference photo and its real proportions
+ * (4.80m x 3.60m, pé-direito 2.60m). No external model — every mesh,
+ * texture and material below is generated in code. It renders behind
+ * every section (not just the hero): scrolling the page slowly sweeps the
+ * camera across the room's open arc, and desktop pointer users can also
+ * click-drag to look around on top of that (touch keeps normal scrolling).
  */
 export function initHeroScene(container) {
   if (!container) return null;
@@ -341,9 +343,11 @@ export function initHeroScene(container) {
   ro.observe(container);
 
   // ---- click-drag look-around (mouse only — touch keeps page scroll) -----
+  // Combined with the scroll sweep below, so each is given a smaller
+  // individual range to keep the total within the room's open arc.
   const orbit = { az: 0, el: 0 };      // user-driven offsets, clamped
   const drag = { active: false, lastX: 0, lastY: 0 };
-  const AZ_LIMIT = 0.55, EL_LIMIT = 0.22;
+  const AZ_LIMIT = 0.32, EL_LIMIT = 0.2;
 
   function onPointerDown(e) {
     if (e.pointerType !== 'mouse') return;
@@ -372,11 +376,16 @@ export function initHeroScene(container) {
   window.addEventListener('pointerup', endDrag);
   window.addEventListener('pointercancel', endDrag);
 
-  // ---- scroll fade / dolly -------------------------------------------
-  let scrollProgress = 0;
+  // ---- scroll-driven sweep across the whole page --------------------
+  // The scene is a fixed backdrop for the entire page, not just the hero,
+  // so scrolling from top to bottom slowly pans the camera across the
+  // room's open arc — a different part of the barbershop stays visible
+  // behind each section as the visitor reads down the page.
+  const SCROLL_SWEEP = 0.34;
+  let pageProgress = 0;
   function onScroll() {
-    const heroH = container.parentElement ? container.parentElement.offsetHeight : window.innerHeight;
-    scrollProgress = Math.min(Math.max(window.scrollY / heroH, 0), 1);
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    pageProgress = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -398,14 +407,14 @@ export function initHeroScene(container) {
     const delta = clock.getDelta();
 
     const idleSway = reduceMotion || drag.active ? 0 : Math.sin(t * 0.14) * 0.045;
+    const scrollAzimuth = reduceMotion ? 0 : (pageProgress * 2 - 1) * SCROLL_SWEEP;
 
-    const az = orbit.az + idleSway;
+    const az = orbit.az + idleSway + scrollAzimuth;
     const el = orbit.el;
-    const dist = camDistance - scrollProgress * 1.3;
     camera.position.set(
-      Math.sin(az) * dist,
-      camHeight + el * 2.2 - scrollProgress * 0.85,
-      Math.cos(az) * dist
+      Math.sin(az) * camDistance,
+      camHeight + el * 2.2,
+      Math.cos(az) * camDistance
     );
     camera.lookAt(lookTarget);
 
@@ -419,7 +428,6 @@ export function initHeroScene(container) {
     }
     posAttr.needsUpdate = true;
 
-    renderer.domElement.style.opacity = String(1 - scrollProgress * 0.9);
     renderer.render(scene, camera);
   }
   animate();

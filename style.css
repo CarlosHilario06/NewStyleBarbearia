@@ -19,13 +19,17 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --shadow-soft: 0 24px 48px -24px rgba(0, 0, 0, 0.55);
+  /* translucent panel tones — let the fixed 3D scene show faintly through
+     section backgrounds while keeping body text fully legible */
+  --bg-t: rgba(18, 17, 16, 0.86);
+  --bg-alt-t: rgba(26, 24, 21, 0.88);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   font-family: 'Inter', -apple-system, sans-serif;
   line-height: 1.6;
@@ -147,21 +151,27 @@ header.is-scrolled {
 .menu-toggle[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
 /* ---------- Hero ---------- */
+/* Fixed, full-viewport 3D backdrop — sits behind the whole page (every
+   section scrolls over it), not just the hero. The gradient is the
+   fallback look if WebGL never loads; the Three.js canvas paints on top
+   of it, transparent, once initHeroScene() succeeds. */
+.bg-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse 90% 70% at 78% 30%, #241d13 0%, var(--bg) 62%);
+}
+.bg-scene canvas { display: block; width: 100%; height: 100%; -webkit-user-select: none; user-select: none; touch-action: pan-y; }
+
 .hero {
   position: relative;
+  z-index: 1;
   min-height: 100vh;
   display: flex;
   align-items: center;
   padding-top: 90px;
   overflow: hidden;
-  background: radial-gradient(ellipse 90% 70% at 78% 30%, #241d13 0%, var(--bg) 62%);
 }
-.hero-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-.hero-scene canvas { display: block; width: 100%; height: 100%; -webkit-user-select: none; user-select: none; touch-action: pan-y; }
 .hero-scrim {
   position: absolute;
   inset: 0;
@@ -286,11 +296,11 @@ header.is-scrolled {
 @media (max-width: 700px) { .scroll-cue { display: none; } }
 
 /* ---------- Section generic ---------- */
-section { padding: 128px 0; position: relative; }
+section { padding: 128px 0; position: relative; z-index: 1; }
 .section-head { margin-bottom: 56px; max-width: 580px; }
 .section-head h2 { font-size: clamp(30px, 4vw, 44px); margin-bottom: 16px; color: var(--cream); }
 .section-head p { color: var(--text-dim); font-size: 16.5px; }
-#servicos { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+#servicos { background: var(--bg-alt-t); backdrop-filter: blur(20px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
 /* ---------- Services ---------- */
 .services-grid {
@@ -345,6 +355,7 @@ section { padding: 128px 0; position: relative; }
 }
 
 /* ---------- About ---------- */
+#sobre { background: var(--bg-t); backdrop-filter: blur(20px); }
 .about-grid {
   display: grid;
   grid-template-columns: 0.82fr 1fr;
@@ -404,7 +415,7 @@ section { padding: 128px 0; position: relative; }
 }
 
 /* ---------- Barber ---------- */
-#profissional { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+#profissional { background: var(--bg-alt-t); backdrop-filter: blur(20px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .barber-grid {
   display: grid;
   grid-template-columns: 0.72fr 1fr;
@@ -448,6 +459,7 @@ section { padding: 128px 0; position: relative; }
 }
 
 /* ---------- Location / contact ---------- */
+#local { background: var(--bg-t); backdrop-filter: blur(20px); }
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -495,6 +507,7 @@ section { padding: 128px 0; position: relative; }
 /* ---------- CTA band ---------- */
 .cta-band {
   position: relative;
+  z-index: 1;
   background: linear-gradient(135deg, var(--wood-dark), var(--wood) 60%, var(--wood-dark));
   text-align: center;
   padding: 88px 28px;
@@ -513,7 +526,14 @@ section { padding: 128px 0; position: relative; }
 .cta-band .btn-outline { border-color: rgba(239,233,223,0.45); }
 
 /* ---------- Footer ---------- */
-footer { padding: 56px 0 36px; border-top: 1px solid var(--line); }
+footer {
+  position: relative;
+  z-index: 1;
+  padding: 56px 0 36px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-t);
+  backdrop-filter: blur(20px);
+}
 .footer-grid {
   display: flex;
   justify-content: space-between;
