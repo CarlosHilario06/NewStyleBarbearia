@@ -1,23 +1,48 @@
 # New Style Barbearia — Site
 
-Site institucional de uma página (one page) da New Style Barbearia, feito em HTML, CSS e JavaScript puros — sem framework, sem build, sem dependências para instalar. O topo (hero) tem uma animação 3D autoral (um poste de barbeiro estilizado, feito em Three.js) e o restante da página usa GSAP + ScrollTrigger para as animações de entrada ao rolar.
+Site institucional de uma página (one page) da New Style Barbearia, feito em HTML, CSS e JavaScript puros — sem framework, sem build, sem dependências para instalar. Landing page de alta conversão: uma seção principal (hero) direta com CTA duplo (agendar / WhatsApp), prova social (anos de experiência), serviços, sobre, o barbeiro, localização/contato e uma faixa final de chamada para ação — sempre com botão de WhatsApp flutuante.
 
-## Estrutura de pastas
+## Paleta de cores
+
+Definida em `:root` no topo do `style.css`, para manter tudo consistente:
+
+| Uso | Variável | Cor |
+|---|---|---|
+| Fundo principal | `--bg` | `#121110` (carvão quase preto) |
+| Fundo alternado (seções) | `--bg-alt` | `#1a1815` |
+| Painéis / cards | `--panel` | `#1e1c19` |
+| Madeira (faixa de CTA) | `--wood` / `--wood-dark` | `#6b4a2f` / `#33220f` |
+| Destaque / botões | `--brass` / `--brass-soft` | `#c9a24b` / `#e9d29c` (latão dourado) |
+| Texto principal | `--text` / `--cream` | `#efe7d8` / `#f3ead9` |
+| Texto secundário | `--text-dim` / `--text-faint` | `#b3aa9a` / `#7d7568` |
+| Linhas / bordas | `--line` | `#38332c` |
+
+A ideia por trás da paleta: carvão escuro + madeira + latão dourado, remetendo a barbearia clássica com um acabamento moderno. Para trocar a cor de destaque, por exemplo, basta editar `--brass` e `--brass-soft` — o resto do site (botões, ícones, links, bordas em hover) segue essas variáveis.
+
+## Tipografia
+
+Duas famílias apenas, carregadas via Google Fonts no `<head>` do `index.html`:
+
+- **Oswald** (peso 500–700) — títulos (`h1`, `h2`, `h3`), rótulos em caixa alta (eyebrows), botões, menu e itens de destaque.
+- **Inter** (peso 400–700) — texto corrido (parágrafos, descrições).
+
+Esse par foi escolhido para manter contraste claro entre título (condensada, em caixa alta, com presença) e corpo de texto (legível, neutra) sem misturar uma terceira fonte.
+
+## Estrutura de arquivos
 
 ```
 .
 ├── index.html        → estrutura e conteúdo do site
-├── style.css          → todo o estilo visual
-├── script.js           → menu mobile, header, animações de entrada (GSAP)
-├── three-scene.js      → cena 3D do hero (Three.js), gerada por código, sem modelo externo
+├── style.css          → todo o estilo visual (paleta, tipografia, layout)
+├── script.js           → menu mobile, header ao rolar, animações de entrada
 ├── favicon.png         → ícone da aba do navegador
 ├── logo-branca.png     → logo usada no menu e no rodapé
 ├── carlinho.png        → foto do barbeiro (seção "O barbeiro")
-├── ambiente.jpg        → foto do ambiente (seção "Sobre")
+├── ambiente.jpg        → foto do ambiente (fundo do hero e seção "Sobre")
 └── README.md
 ```
 
-Three.js e GSAP são carregados via CDN (não precisam de instalação). O site funciona sem 3D em navegadores/dispositivos sem WebGL — o hero cai automaticamente para o fundo em gradiente, sem quebrar o layout.
+Nenhuma dependência externa de JavaScript (sem CDN de animação/3D) — as animações de entrada ao rolar usam `IntersectionObserver` nativo do navegador, então o conteúdo nunca fica preso invisível se algo falhar ao carregar.
 
 ## Como visualizar localmente
 
@@ -39,34 +64,24 @@ e acessar `http://localhost:8000` no navegador.
 
 ## Como editar as informações do site
 
-Tudo fica no arquivo `index.html`. Os principais pontos ficam logo no topo, dentro das tags `<a href="...">`:
+Tudo fica no arquivo `index.html`. Os principais pontos:
 
 - **Link de agendamento** (botão "Agendar horário" / "Agendar"): procure por `chat.inbarberapp.com` e troque pela sua URL.
 - **WhatsApp**: procure por `wa.me/5514996005808` e troque o número (mantendo o formato `55` + DDD + número).
 - **Instagram**: procure por `instagram.com/carlinhoo_06` e troque pelo seu usuário.
-- **Endereço / Google Maps**: procure pela seção `id="local"` — lá tem o texto do endereço e dois links de mapa (`MAPS_LINK`, mostrado como "Ver no Google Maps", e o `iframe` do mapa embutido, que usa o endereço na URL).
+- **Endereço / Google Maps**: procure pela seção `id="local"` — lá tem o texto do endereço e dois links de mapa ("Ver no Google Maps" e o `iframe` do mapa embutido, que usa o endereço na URL).
 - **Textos** (sobre a barbearia, sobre o barbeiro, serviços): é só editar o texto direto dentro das tags `<p>`, `<h1>`, `<h2>` etc.
 
 ## Como trocar as fotos
 
 Basta substituir os arquivos na raiz do projeto **mantendo o mesmo nome**:
 
-- `ambiente.jpg` — foto do ambiente, usada na seção "Sobre".
+- `ambiente.jpg` — foto do ambiente, usada como fundo do hero e na seção "Sobre".
 - `carlinho.png` — foto do barbeiro na seção "O barbeiro" (se for trocar, uma foto com fundo já removido/transparente fica melhor, pois o layout foi pensado pra isso).
 - `logo-branca.png` — logo em branco/transparente (usada no menu e no rodapé).
 - `favicon.png` — ícone pequeno que aparece na aba do navegador.
 
-Se preferir usar outro nome de arquivo, lembre de atualizar também o caminho correspondente dentro do `index.html` (procure por `src="...`).
-
-## Sobre a animação 3D
-
-A página inteira usa uma cena Three.js própria (`three-scene.js`) como **fundo fixo** — não é só um efeito do topo, ela fica atrás de todas as seções conforme você rola a página até o rodapé. É uma reconstrução estilizada do próprio ambiente da barbearia, baseada na foto 360° real da loja — um cômodo em U com 3 paredes (parede do espelho, parede de fundo com TV/quadros/espelho redondo, parede da porta) aberto na frente, nas proporções reais do espaço — 4,80m x 3,60m, pé-direito 2,60m. Cadeira de barbeiro, sofá, espelho, TV, porta, ventilador, tripé de luz de anel e banqueta são todos modelados com geometria simples (caixas, cilindros) direto no código — não depende de nenhum arquivo de modelo 3D externo nem de scan/foto real.
-
-Ao carregar, os móveis "aparecem" na cena com uma animação de entrada escalonada. Conforme a página é rolada do topo até o rodapé, a câmera varre bem devagar o cômodo (de um lado ao outro), então uma parte diferente da barbearia fica visível atrás de cada seção. Em desktop, dá pra **clicar e arrastar** o mouse sobre a cena pra olhar ao redor por conta própria também (a câmera nunca atravessa as paredes); em toque (celular/tablet) o arrastar fica desativado de propósito, pra não atrapalhar o scroll normal da página. Os fundos das seções (`#servicos`, `#sobre`, `#profissional`, `#local`, rodapé) usam uma cor semi-transparente com desfoque (`backdrop-filter: blur`) por cima da cena, pra manter o texto legível e ainda deixar a barbearia aparecer discretamente atrás.
-
-Para ajustar posições, cores ou as dimensões do cômodo, edite as constantes no início de `three-scene.js` (`ROOM_W`, `ROOM_D`, `ROOM_H`). A cena respeita a preferência do sistema por "movimento reduzido" (`prefers-reduced-motion`), desligando o balanço/varredura automática da câmera para quem tem essa opção ativada.
-
-**Importante:** isso é uma maquete estilizada, não um tour 3D fotorrealista (tipo Matterport/scan 3D). Pra esse nível de realismo seria necessário escanear o ambiente de verdade (com um app tipo Polycam ou Luma AI, ou contratando um serviço de tour virtual) e carregar o modelo escaneado no lugar dessa geometria simples.
+Se preferir usar outro nome de arquivo, lembre de atualizar também o caminho correspondente dentro do `index.html` (procure por `src="...`) e, no caso do `ambiente.jpg`, dentro do `style.css` (procure por `url('ambiente.jpg')`).
 
 ## Domínio próprio (opcional)
 

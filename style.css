@@ -1,3 +1,8 @@
+/* ==========================================================================
+   New Style Barbearia — design tokens
+   Paleta: carvão escuro + madeira + latão dourado (barbearia clássica/moderna)
+   Tipografia: Oswald (títulos, rótulos, botões) + Inter (texto corrido)
+   ========================================================================== */
 :root {
   --bg: #121110;
   --bg-alt: #1a1815;
@@ -19,17 +24,13 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --shadow-soft: 0 24px 48px -24px rgba(0, 0, 0, 0.55);
-  /* translucent panel tones — let the fixed 3D scene show faintly through
-     section backgrounds while keeping body text fully legible */
-  --bg-t: rgba(18, 17, 16, 0.86);
-  --bg-alt-t: rgba(26, 24, 21, 0.88);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: transparent;
+  background: var(--bg);
   color: var(--text);
   font-family: 'Inter', -apple-system, sans-serif;
   line-height: 1.6;
@@ -37,10 +38,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Two-family type system: Oswald carries display/UI weight, Inter carries
+   reading weight. No third family — keeps every screen consistent. */
 h1, h2, h3 {
-  font-family: 'Fraunces', 'Georgia', serif;
-  font-weight: 560;
-  letter-spacing: -0.01em;
+  font-family: 'Oswald', 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 .eyebrow, .label, .brand, .btn, .nav-links a, .info-item h4 {
@@ -79,7 +83,7 @@ header {
   transition: background .4s var(--ease-out), border-color .4s var(--ease-out), backdrop-filter .4s var(--ease-out);
 }
 header.is-scrolled {
-  background: rgba(18, 17, 16, 0.86);
+  background: rgba(18, 17, 16, 0.92);
   backdrop-filter: blur(10px);
   border-bottom-color: var(--line);
 }
@@ -151,34 +155,17 @@ header.is-scrolled {
 .menu-toggle[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
 /* ---------- Hero ---------- */
-/* Fixed, full-viewport 3D backdrop — sits behind the whole page (every
-   section scrolls over it), not just the hero. The gradient is the
-   fallback look if WebGL never loads; the Three.js canvas paints on top
-   of it, transparent, once initHeroScene() succeeds. */
-.bg-scene {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background: radial-gradient(ellipse 90% 70% at 78% 30%, #241d13 0%, var(--bg) 62%);
-}
-.bg-scene canvas { display: block; width: 100%; height: 100%; -webkit-user-select: none; user-select: none; touch-action: pan-y; }
-
 .hero {
   position: relative;
-  z-index: 1;
   min-height: 100vh;
   display: flex;
   align-items: center;
   padding-top: 90px;
   overflow: hidden;
-}
-.hero-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(100deg, var(--bg) 0%, var(--bg) 28%, rgba(18,17,16,0.72) 46%, rgba(18,17,16,0.1) 68%),
-              linear-gradient(0deg, var(--bg) 0%, rgba(18,17,16,0) 22%, rgba(18,17,16,0) 82%, var(--bg) 100%);
-  pointer-events: none;
+  background:
+    linear-gradient(100deg, var(--bg) 0%, var(--bg) 26%, rgba(18,17,16,0.78) 48%, rgba(18,17,16,0.32) 72%, rgba(18,17,16,0.18) 100%),
+    linear-gradient(0deg, var(--bg) 0%, rgba(18,17,16,0) 22%, rgba(18,17,16,0) 82%, var(--bg) 100%),
+    url('ambiente.jpg') center 42% / cover no-repeat;
 }
 .hero-inner {
   position: relative;
@@ -187,10 +174,8 @@ header.is-scrolled {
   margin: 0 auto;
   padding: 0 28px;
   width: 100%;
-  pointer-events: none;
 }
-.hero-content { max-width: 560px; pointer-events: none; }
-.hero-content a, .hero-content .btn { pointer-events: auto; }
+.hero-content { max-width: 560px; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -208,17 +193,15 @@ header.is-scrolled {
 }
 .hero h1 {
   font-size: clamp(46px, 7vw, 84px);
-  line-height: 0.98;
+  line-height: 1.02;
   margin-bottom: 22px;
   color: var(--cream);
 }
-.hero h1 em {
-  font-style: italic;
-  color: var(--brass-soft);
-  font-weight: 400;
-}
+.hero h1 .accent { color: var(--brass-soft); }
 .hero p.lede {
   font-family: 'Inter', sans-serif;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--text-dim);
   font-size: 18px;
   max-width: 460px;
@@ -251,17 +234,17 @@ header.is-scrolled {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: rgba(30, 27, 23, 0.72);
+  background: rgba(30, 27, 23, 0.85);
   border: 1px solid var(--line-soft);
   backdrop-filter: blur(14px);
   border-radius: var(--radius-lg);
   padding: 18px 24px;
   box-shadow: var(--shadow-soft);
   max-width: 300px;
-  pointer-events: none;
 }
 .hero-badge .num {
-  font-family: 'Fraunces', serif;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
   font-size: 34px;
   color: var(--brass-soft);
   line-height: 1;
@@ -281,7 +264,6 @@ header.is-scrolled {
   gap: 10px;
   color: var(--text-faint);
   font-size: 11px;
-  pointer-events: none;
 }
 .scroll-cue .line { width: 1px; height: 34px; background: linear-gradient(var(--brass), transparent); position: relative; overflow: hidden; }
 .scroll-cue .line::after {
@@ -296,11 +278,11 @@ header.is-scrolled {
 @media (max-width: 700px) { .scroll-cue { display: none; } }
 
 /* ---------- Section generic ---------- */
-section { padding: 128px 0; position: relative; z-index: 1; }
+section { padding: 128px 0; }
 .section-head { margin-bottom: 56px; max-width: 580px; }
 .section-head h2 { font-size: clamp(30px, 4vw, 44px); margin-bottom: 16px; color: var(--cream); }
 .section-head p { color: var(--text-dim); font-size: 16.5px; }
-#servicos { background: var(--bg-alt-t); backdrop-filter: blur(20px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+#servicos { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
 /* ---------- Services ---------- */
 .services-grid {
@@ -329,8 +311,9 @@ section { padding: 128px 0; position: relative; z-index: 1; }
   position: absolute;
   top: 22px;
   right: 26px;
-  font-family: 'Fraunces', serif;
-  font-size: 13px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
   color: var(--text-faint);
 }
 .service-icon {
@@ -343,7 +326,7 @@ section { padding: 128px 0; position: relative; z-index: 1; }
   transition: background .3s var(--ease-out), color .3s var(--ease-out);
 }
 .service-card:hover .service-icon { background: var(--brass); color: #1a1511; }
-.service-card h3 { font-size: 20px; margin-bottom: 10px; color: var(--cream); font-weight: 550; }
+.service-card h3 { font-size: 19px; margin-bottom: 10px; color: var(--cream); }
 .service-card p { color: var(--text-dim); font-size: 14.5px; }
 .note-chem {
   margin-top: 36px;
@@ -351,11 +334,9 @@ section { padding: 128px 0; position: relative; z-index: 1; }
   font-size: 13.5px;
   border-left: 2px solid var(--brass);
   padding-left: 16px;
-  font-style: italic;
 }
 
 /* ---------- About ---------- */
-#sobre { background: var(--bg-t); backdrop-filter: blur(20px); }
 .about-grid {
   display: grid;
   grid-template-columns: 0.82fr 1fr;
@@ -415,7 +396,7 @@ section { padding: 128px 0; position: relative; z-index: 1; }
 }
 
 /* ---------- Barber ---------- */
-#profissional { background: var(--bg-alt-t); backdrop-filter: blur(20px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+#profissional { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .barber-grid {
   display: grid;
   grid-template-columns: 0.72fr 1fr;
@@ -459,7 +440,6 @@ section { padding: 128px 0; position: relative; z-index: 1; }
 }
 
 /* ---------- Location / contact ---------- */
-#local { background: var(--bg-t); backdrop-filter: blur(20px); }
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -507,7 +487,6 @@ section { padding: 128px 0; position: relative; z-index: 1; }
 /* ---------- CTA band ---------- */
 .cta-band {
   position: relative;
-  z-index: 1;
   background: linear-gradient(135deg, var(--wood-dark), var(--wood) 60%, var(--wood-dark));
   text-align: center;
   padding: 88px 28px;
@@ -527,12 +506,9 @@ section { padding: 128px 0; position: relative; z-index: 1; }
 
 /* ---------- Footer ---------- */
 footer {
-  position: relative;
-  z-index: 1;
   padding: 56px 0 36px;
   border-top: 1px solid var(--line);
-  background: var(--bg-t);
-  backdrop-filter: blur(20px);
+  background: var(--bg);
 }
 .footer-grid {
   display: flex;
@@ -571,16 +547,24 @@ footer {
 .whats-float:hover { transform: scale(1.08); box-shadow: 0 14px 32px -6px rgba(0,0,0,0.6); }
 .whats-float:active { transform: scale(1.02); }
 
-/* ---------- Scroll reveal base ----------
-   [data-reveal] elements start hidden ONLY once GSAP confirms it loaded and
-   arms the ".gsap-ready" class on <html> (see script.js). If GSAP fails to
-   load (blocked CDN, offline, slow network), this class never gets added,
-   so content stays at its natural opacity: 1 and is never stuck invisible. */
-.gsap-ready [data-reveal] { opacity: 0; }
+/* ---------- Scroll reveal ----------
+   [data-reveal] elements are visible by default (opacity: 1). Only once
+   script.js confirms IntersectionObserver is available does it arm the
+   ".js-reveal" class on <html> and switch them to a hidden start state —
+   so content can never get stuck invisible if JS fails or is disabled. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.js-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .js-reveal [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* ---------- Responsive ---------- */

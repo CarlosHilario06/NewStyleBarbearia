@@ -1,7 +1,3 @@
-import { initHeroScene } from './three-scene.js';
-
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 /* ---------- mobile nav ---------- */
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
@@ -26,55 +22,23 @@ function onHeaderScroll() {
 window.addEventListener('scroll', onHeaderScroll, { passive: true });
 onHeaderScroll();
 
-/* ---------- GSAP scroll reveals ----------
-   The ".gsap-ready" class is what switches [data-reveal] elements to
-   start at opacity: 0 (see style.css) — only added here, so a failed or
-   slow GSAP load never leaves content stuck invisible. */
-if (window.gsap) {
-  document.documentElement.classList.add('gsap-ready');
-  gsap.registerPlugin(ScrollTrigger);
+/* ---------- scroll reveals (no external library) ----------
+   ".js-reveal" is what switches [data-reveal] elements to their hidden
+   start state (see style.css) — only added once IntersectionObserver is
+   confirmed available, so content is never stuck invisible without it. */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const heroReveals = gsap.utils.toArray('.hero [data-reveal]');
-  gsap.set(heroReveals, { y: reduceMotion ? 0 : 26 });
-  const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  heroTl.to(heroReveals, {
-    opacity: 1,
-    y: 0,
-    duration: reduceMotion ? 0.01 : 0.9,
-    stagger: reduceMotion ? 0 : 0.12,
-  });
+if ('IntersectionObserver' in window && !reduceMotion) {
+  document.documentElement.classList.add('js-reveal');
 
-  gsap.utils.toArray('[data-reveal]:not(.hero [data-reveal])').forEach((el, i) => {
-    gsap.set(el, { y: reduceMotion ? 0 : 24 });
-    gsap.to(el, {
-      opacity: 1,
-      y: 0,
-      duration: reduceMotion ? 0.01 : 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        toggleActions: 'play none none none',
-      },
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
     });
-  });
-}
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 
-/* ---------- 3D hero scene ---------- */
-const sceneContainer = document.getElementById('heroScene');
-const scene = initHeroScene(sceneContainer);
-
-if (scene && window.gsap && !reduceMotion) {
-  const scales = scene.furniture.map((piece) => piece.scale);
-  gsap.from(scales, {
-    x: 0.001, y: 0.001, z: 0.001,
-    duration: 1.1,
-    ease: 'back.out(1.6)',
-    stagger: 0.06,
-    delay: 0.2,
-  });
-}
-
-if (!scene) {
-  sceneContainer?.classList.add('is-static');
+  document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
 }
